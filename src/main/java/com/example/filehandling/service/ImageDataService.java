@@ -3,12 +3,14 @@ package com.example.filehandling.service;
 import com.example.filehandling.entity.ImageData;
 import com.example.filehandling.exception.CustomException;
 import com.example.filehandling.repository.ImageDataRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class ImageDataService {
 
     @Autowired
@@ -27,14 +29,14 @@ public class ImageDataService {
         return "Saved the image data successfully";
     }
 
-    public byte[] getImage() throws CustomException {
+    public byte[] getImage(Long id) throws CustomException {
 
-        Optional<ImageData> imageData = imageDataRepository.findById(1L);
+        Optional<ImageData> imageData = imageDataRepository.findById(id);
 
         if(imageData.isPresent()){
             return imageData.get().getImageData();
         }else{
-            System.out.println("Could not find the image!! ");
+            log.info("Could not find the image!! ");
             throw new CustomException("Could not find the image!!");
         }
     }

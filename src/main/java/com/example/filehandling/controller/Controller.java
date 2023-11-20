@@ -2,8 +2,8 @@ package com.example.filehandling.controller;
 
 import com.example.filehandling.exception.CustomException;
 import com.example.filehandling.service.ImageDataService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
+@Slf4j
 public class Controller {
 
     @Autowired
@@ -24,9 +25,9 @@ public class Controller {
                                             @RequestParam("number") String number) throws IOException {
 
         if(imageFile != null){
-            System.out.println("image file name received "+imageFile.getName());
+            log.info("image file name received "+imageFile.getName());
         }else{
-            System.out.println("Image not received");
+            log.info("Image not received");
         }
 
         String response = imageDataService.saveimageData(imageFile.getBytes(),name,address,number);
@@ -36,11 +37,12 @@ public class Controller {
 
     }
 
-    @GetMapping("/getImage")
-    public ResponseEntity<byte[]> getImage() throws CustomException {
+    @GetMapping("/getImage/{id}")
+    public ResponseEntity<byte[]> getImage(@PathVariable("id") Long id) throws CustomException {
 
-        byte[] imageByteData = imageDataService.getImage();
+        byte[] imageByteData = imageDataService.getImage(id);
 
+        log.info("Fetched the image successfully ");
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_PNG)
                 .body(imageByteData);

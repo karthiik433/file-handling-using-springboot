@@ -1,9 +1,12 @@
 package com.example.filehandling.controller;
 
+import com.example.filehandling.dto.ImagesResponseDto;
 import com.example.filehandling.exception.CustomException;
 import com.example.filehandling.service.ImageDataService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +16,7 @@ import java.io.IOException;
 
 @RestController
 @Slf4j
+@CrossOrigin("http://localhost:3000")
 public class Controller {
 
     @Autowired
@@ -37,15 +41,27 @@ public class Controller {
 
     }
 
-    @GetMapping("/getImage/{id}")
-    public ResponseEntity<byte[]> getImage(@PathVariable("id") Long id) throws CustomException {
+    @GetMapping(value = "/getImage/{id}",produces = MediaType.IMAGE_JPEG_VALUE)
+    public ResponseEntity<Resource> getImage(@PathVariable("id") Long id) throws CustomException {
 
         byte[] imageByteData = imageDataService.getImage(id);
 
-        log.info("Fetched the image successfully ");
+        log.info("Fetched the image successfully "+id);
+        ByteArrayResource resource = new ByteArrayResource(imageByteData);
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_PNG)
-                .body(imageByteData);
+                .body(resource);
 
     }
+
+    @GetMapping(value = "/getImages")
+    public ResponseEntity<ImagesResponseDto> getImages(){
+
+        ImagesResponseDto imagesResponseDto = imageDataService.getImageMetaData();
+        log.info("Fetched the images metadata successfully");
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(imagesResponseDto);
+    }
+
 }

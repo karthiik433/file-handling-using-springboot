@@ -6,9 +6,9 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class ImagesResponseDto {
+public class CricketerResponseDto {
 
     @JsonProperty("images")
-    private List<ImageDto> imageDtoList;
+    private List<CricketerDto> cricketerDtoList;
 
 }

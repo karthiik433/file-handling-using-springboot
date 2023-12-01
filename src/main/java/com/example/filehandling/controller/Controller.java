@@ -1,6 +1,6 @@
 package com.example.filehandling.controller;
 
-import com.example.filehandling.dto.ImagesResponseDto;
+import com.example.filehandling.dto.CricketerResponseDto;
 import com.example.filehandling.exception.CustomException;
 import com.example.filehandling.service.ImageDataService;
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +25,7 @@ public class Controller {
     @PostMapping("/uploadImage")
     public ResponseEntity<String> saveImage(@RequestPart("image")MultipartFile imageFile,
                                             @RequestParam("name") String name,
-                                            @RequestParam("address") String address,
-                                            @RequestParam("number") String number) throws IOException {
+                                            @RequestParam("description") String description) throws IOException {
 
         if(imageFile != null){
             log.info("image file name received "+imageFile.getName());
@@ -34,7 +33,7 @@ public class Controller {
             log.info("Image not received");
         }
 
-        String response = imageDataService.saveimageData(imageFile.getBytes(),name,address,number);
+        String response = imageDataService.saveimageData(imageFile.getBytes(),name,description);
 
         return ResponseEntity.status(201)
                 .body(response);
@@ -55,13 +54,38 @@ public class Controller {
     }
 
     @GetMapping(value = "/getImages")
-    public ResponseEntity<ImagesResponseDto> getImages(){
+    public ResponseEntity<CricketerResponseDto> getImages(){
 
-        ImagesResponseDto imagesResponseDto = imageDataService.getImageMetaData();
+        CricketerResponseDto cricketerResponseDto = imageDataService.getImageMetaData();
         log.info("Fetched the images metadata successfully");
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(imagesResponseDto);
+                .body(cricketerResponseDto);
+    }
+
+    @GetMapping(value = "/downloadExcel")
+    public ResponseEntity<Resource> exportExcel() throws Exception{
+
+        log.info("Downloading the excel file");
+        Resource resource = imageDataService.generateExcelFile();
+
+        return ResponseEntity.ok()
+                .contentLength(resource.contentLength())
+                .contentType(MediaType.parseMediaType("application/vnd.ms-excel"))
+                .body(resource);
+    }
+
+
+    @GetMapping(value = "/downloadPdf")
+    public ResponseEntity<Resource> exportPdf() throws Exception{
+
+        log.info("Downloading the pdf file");
+        Resource resource = imageDataService.generatePdf();
+
+        return  ResponseEntity.ok()
+                .contentLength(resource.contentLength())
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(resource);
     }
 
 }

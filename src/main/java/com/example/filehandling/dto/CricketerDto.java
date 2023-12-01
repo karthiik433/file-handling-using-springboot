@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class ImageDto {
+public class CricketerDto {
 
     @JsonProperty("id")
     private Long id;

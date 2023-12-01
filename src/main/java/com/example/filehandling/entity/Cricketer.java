@@ -6,9 +6,9 @@ import lombok.Data;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "Image_Data",schema = "myschema")
+@Table(name = "cricketer",schema = "myschema")
 @Data
-public class ImageData {
+public class Cricketer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,11 +22,10 @@ public class ImageData {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "address")
-    private String address;
+    @Column(name = "description")
+    private String description;
 
-    @Column(name = "phone_number")
-    private String mobileNumber;
+
 
 
 }
